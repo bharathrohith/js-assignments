@@ -22,7 +22,7 @@
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
 function parseDataFromRfc2822(value) {
-   throw new Error('Not implemented');
+   return Date.parse(value);
 }
 
 /**
@@ -37,7 +37,7 @@ function parseDataFromRfc2822(value) {
  *    '2016-01-19T08:07:37Z' => Date()
  */
 function parseDataFromIso8601(value) {
-   throw new Error('Not implemented');
+   return Date.parse(value);
 }
 
 
@@ -56,7 +56,7 @@ function parseDataFromIso8601(value) {
  *    Date(2015,1,1)    => false
  */
 function isLeapYear(date) {
-   throw new Error('Not implemented');
+   return (date.getFullYear()%100 == 0) ? (date.getFullYear()%400 == 0 ? true : false ) : (date.getFullYear()%4 == 0 ? true : false);
 }
 
 
@@ -76,14 +76,45 @@ function isLeapYear(date) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
 function timeSpanToString(startDate, endDate) {
-   throw new Error('Not implemented');
+    var min = 0;
+    var sec= 0;
+    var hr = 0;
+    var msc = 0;
+    hr = endDate.getHours() - startDate.getHours();
+
+    min = endDate.getMinutes() - startDate.getMinutes();
+    if(min < 0)
+    {
+      min = 60 + min;
+      hr--;
+    }
+
+    sec = endDate.getSeconds() - startDate.getSeconds();
+    if(sec < 0)
+    {
+      sec = 60 + sec;
+      min--;
+    }
+
+    msc = endDate.getMilliseconds() - startDate.getMilliseconds();
+    if(msc < 0)
+    {
+      msc = msc + 100;
+      sec--;
+    }
+    hr = hr <10 ? "0" + hr : hr;
+    min = min <10 ? "0" + min : min;
+    sec = sec <10 ? "0" + sec : sec;
+    msc = msc <10 ? "00" + msc : (msc < 100) ? ("0" + msc) : msc;
+    var time = hr + ":" + min + ":" + sec + "." + msc;
+   return time;
 }
 
 
 /**
  * Returns the angle (in radians) between the hands of an analog clock for the specified Greenwich time.
  * If you have problem with solution please read: https://en.wikipedia.org/wiki/Clock_angle_problem
- * 
+ *
  * @param {date} date
  * @return {number}
  *
@@ -94,7 +125,14 @@ function timeSpanToString(startDate, endDate) {
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
 function angleBetweenClockHands(date) {
-    throw new Error('Not implemented');
+    var minAngle = (date.getUTCMinutes()*6);
+    var hrAngle = ((date.getUTCHours()%12)*30) + date.getUTCMinutes()*0.5;
+    var diffAngle = Math.abs(minAngle-hrAngle);
+    if(diffAngle > 180)
+    {
+      diffAngle -= 180;
+    }
+    return (Math.PI/180)*diffAngle;
 }
 
 

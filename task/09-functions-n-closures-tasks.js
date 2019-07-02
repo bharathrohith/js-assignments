@@ -13,8 +13,10 @@
 
 /**
  * Returns the functions composition of two specified functions f(x) and g(x).
- * The result of compose is to be a function of one argument, (lets call the argument x),
- * which works like applying function f to the result of applying function g to x, i.e.
+ * The result of compose is to be a function of one argument,
+  (lets call the argument x),
+ * which works like applying function f to the result
+ of applying function g to x, i.e.
  *  getComposition(f,g)(x) = f(g(x))
  *
  * @param {Function} f
@@ -26,7 +28,9 @@
  *
  */
 function getComposition(f,g) {
-    throw new Error('Not implemented');
+    return function(z){
+      return f(g(z));
+    }
 }
 
 
@@ -47,7 +51,10 @@ function getComposition(f,g) {
  *
  */
 function getPowerFunction(exponent) {
-    throw new Error('Not implemented');
+    return function(base)
+    {
+      return Math.pow(base,exponent);
+    }
 }
 
 
@@ -65,31 +72,60 @@ function getPowerFunction(exponent) {
  *   getPolynom()      => null
  */
 function getPolynom() {
-    throw new Error('Not implemented');
+    let args = [];
+    for(let i = 0;i<arguments.length;i++)
+    {
+      args.push(arguments[i]);
+    }
+    return function()
+    {
+      let sum = 0;
+      var x = arguments[0];
+      let p = 0;
+      for(let i=args.length-1;i>=0;i--)
+      {
+        sum += args[i]*Math.pow(x,p);
+        p++;
+      }
+      return sum;
+    }
 }
 
 
 /**
  * Memoizes passed function and returns function
- * which invoked first time calls the passed function and then always returns cached result.
+ * which invoked first time calls the passed function and then always returns
+  cached result.
  *
  * @params {Function} func - function to memoize
  * @return {Function} memoized function
  *
  * @example
  *   var memoizer = memoize(() => Math.random());
- *   memoizer() => some random number  (first run, evaluates the result of Math.random())
- *   memoizer() => the same random number  (second run, returns the previous cached result)
+ *   memoizer() => some random number  (first run,
+    evaluates the result of Math.random())
+ *   memoizer() => the same random number
+  (second run, returns the previous cached result)
  *   ...
- *   memoizer() => the same random number  (next run, returns the previous cached result)
+ *   memoizer() => the same random number
+  (next run, returns the previous cached result)
  */
 function memoize(func) {
-    throw new Error('Not implemented');
+    var cache = {};
+    if(cache.func)
+    {
+      return () => cache.func;
+    }
+    else {
+      cache.func = func();
+      return () => cache.func;
+    }
 }
 
 
 /**
- * Returns the function trying to call the passed function and if it throws,
+ * Returns the function trying to call the passed function
+ and if it throws,
  * retrying it specified number of attempts.
  *
  * @param {Function} func
@@ -104,7 +140,19 @@ function memoize(func) {
  * retryer() => 2
  */
 function retry(func, attempts) {
-    throw new Error('Not implemented');
+    if(attempts == 0)
+    {
+      return ;
+    }
+    return function(){
+      try{
+        return func.apply(null,arguments);
+      }
+      catch(err)
+      {
+        return retry(func,attempts-1)();
+      }
+    }
 }
 
 
@@ -132,7 +180,14 @@ function retry(func, attempts) {
  *
  */
 function logger(func, logFunc) {
-    throw new Error('Not implemented');
+      return function(){
+        let args = [];
+        for(let i = 0 ; i < arguments.length; i++) args.push(arguments[i]);
+        logFunc(func.name + "("+JSON.stringify(args).slice(1,JSON.stringify(args).length - 1)+") starts");
+        let result =  func(...args);
+        logFunc(func.name + "("+JSON.stringify(args).slice(1,JSON.stringify(args).length - 1)+") ends");
+        return result;
+      };
 }
 
 
@@ -155,7 +210,8 @@ function partialUsingArguments(fn) {
 
 
 /**
- * Returns the id generator function that returns next integer starting from specified number every time when invoking.
+ * Returns the id generator function that returns next integer starting from
+ specified number every time when invoking.
  *
  * @param {Number} startFrom
  * @return {Function}
@@ -171,7 +227,8 @@ function partialUsingArguments(fn) {
  *   getId10() => 11
  */
 function getIdGeneratorFunction(startFrom) {
-    throw new Error('Not implemented');
+    var count = startFrom;
+    return () => count++;
 }
 
 
